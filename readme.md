@@ -13,9 +13,10 @@ This function
 
 ### Example Useage
 
-    parse_caml([{field: "Status", excludes:["Completed", "Cancelled", "Pending Approval"]},
-                {field: "Office", includes:["Home Office", "Regional Office", "Field Office"]},
-                {field: "Portfolio", includes:["Financial Consulting"], excludes:["Application Development"] }], "Date", true);
+    parse_caml([ {field: "Status", excludes:["Completed", "Cancelled", "Pending Approval"]},
+                 {field: "Office", includes:["Home Office", "Regional Office", "Field Office"]},
+                 {field: "Portfolio", includes:["Financial Consulting"], excludes:["Application Development"]} ], 
+               "Date", true);
 
 ### CAML Output 
 
