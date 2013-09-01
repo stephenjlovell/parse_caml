@@ -6,7 +6,7 @@ The function accepts an array of objects, where each object represents a field i
 
 Values for a given field can be included or excluded by adding the values to an 'includes' or 'excludes' array within the field object.  Any number of values can be included or excluded in this way.  These arrays are optional and may be omitted.
 
-You can also specify a field to order the results by via the order_field property.  Set order_by to true for ascending, or false for descending.  
+You can also specify a field to order the results by via the order_field argument.  Set order_by to true for ascending, or false for descending.  
 
 
 ### Example Query
