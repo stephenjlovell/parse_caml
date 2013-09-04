@@ -1,6 +1,4 @@
 
-// The MIT License (MIT)
-
 // Copyright (c) 2013 Stephen J. Lovell
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
