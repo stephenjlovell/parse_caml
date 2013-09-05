@@ -19,56 +19,19 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 function parse_caml (fields, options){
-  function query_by_field (field, includes, excludes){
-    function add_query_terms (field, arr, item_count, include_mode){
-      var new_args = "", caml_where = "", item_tag = "", operand = "";
-      if (item_count == 0) {return "";}  // all array items have been parsed.
-      if (include_mode){
-        item_tag = "Eq";
-        operand = "Or";
-      } else {
-        item_tag = "Neq";
-        operand = "And";
-      }
-      if(item_count == 2){  // if 2 items remain, no need for additional nested operands.
-        while(item_count > 0){
-          new_args += "<" + item_tag + "><FieldRef Name=\'" + field + "\'/><Value Type=\'Text\'>" + arr[item_count-1] + "</Value></" + item_tag + ">";
-          item_count -= 1;           
-        }
-        new_args = "<" + operand + ">" + new_args + "</" + operand + ">";
-      } else {
-        new_args += "<" + item_tag + "><FieldRef Name=\'" + field + "\'/><Value Type=\'Text\'>" + arr[item_count-1] + "</Value></" + item_tag + ">";
-        item_count -= 1;
-      }
-      caml_where = add_query_terms(field, arr, item_count, include_mode);  // recursive call to add_query_terms.
-      if(caml_where) {
-        return ("<" + operand + ">" + caml_where + new_args + "</" + operand + ">");   
-      } else {
-        return new_args;
-      }
-    } // end add_query_terms
-    var caml_where = "";
-    var include = (includes != null && includes != undefined && includes.length > 0);
-    var exclude = (excludes != null && excludes != undefined && excludes.length > 0);
-    if(include){ caml_where += add_query_terms(field, includes, includes.length, true); }
-    if(exclude){ caml_where += add_query_terms(field, excludes, excludes.length, false); }
-    if(include && exclude){ caml_where = "<And>" + caml_where + "</And>"; }  
-    return caml_where;
-  } // end query_by_field
-
   function add_fields (fields, field_count){
     var new_args = "", caml_where = "";
     if (field_count == 0){ return "";}
     if (field_count == 2) {
       while (field_count > 0){
         var f = fields[field_count-1];
-        new_args += query_by_field(f.field, f.includes, f.excludes);
+        new_args += build_elements_for_field(f.field, f.includes, f.excludes);
         field_count -= 1;
       }
       new_args = "<And>" + new_args + "</And>";
     } else {
       var f = fields[field_count-1];
-      new_args += query_by_field(f.field, f.includes, f.excludes);
+      new_args += build_elements_for_field(f.field, f.includes, f.excludes);
       field_count -= 1;
     }
     caml_where = add_fields(fields, field_count);  // recursive call to add_fields
@@ -78,6 +41,44 @@ function parse_caml (fields, options){
       return new_args;
     }
   }  // end add_fields
+  
+  function build_elements_for_field (field, includes, excludes){
+    var caml_where = "";
+    var include = (includes != null && includes != undefined && includes.length > 0);
+    var exclude = (excludes != null && excludes != undefined && excludes.length > 0);
+    if(include){ caml_where += add_elements(field, includes, includes.length, true); }
+    if(exclude){ caml_where += add_elements(field, excludes, excludes.length, false); }
+    if(include && exclude){ caml_where = "<And>" + caml_where + "</And>"; }  
+    return caml_where;
+  } // end build_elements_for_field
+
+  function add_elements (field, arr, item_count, include_mode){
+    var new_args = "", caml_where = "", item_tag = "", operand = "";
+    if (item_count == 0) {return "";}  // all array items have been parsed.
+    if (include_mode){
+      item_tag = "Eq";
+      operand = "Or";
+    } else {
+      item_tag = "Neq";
+      operand = "And";
+    }
+    if(item_count == 2){  // if 2 items remain, no need for additional nested operands.
+      while(item_count > 0){
+        new_args += "<" + item_tag + "><FieldRef Name=\'" + field + "\'/><Value Type=\'Text\'>" + arr[item_count-1] + "</Value></" + item_tag + ">";
+        item_count -= 1;           
+      }
+      new_args = "<" + operand + ">" + new_args + "</" + operand + ">";
+    } else {
+      new_args += "<" + item_tag + "><FieldRef Name=\'" + field + "\'/><Value Type=\'Text\'>" + arr[item_count-1] + "</Value></" + item_tag + ">";
+      item_count -= 1;
+    }
+    caml_where = add_elements(field, arr, item_count, include_mode);  // recursive call to add_elements.
+    if(caml_where) {
+      return ("<" + operand + ">" + caml_where + new_args + "</" + operand + ">");   
+    } else {
+      return new_args;
+    }
+  } // end add_elements
 
   var caml_where = "", sort_order = "", caml_order = "";
   var caml_options = "<QueryOptions><DateInUtc>TRUE</DateInUtc></QueryOptions>";
