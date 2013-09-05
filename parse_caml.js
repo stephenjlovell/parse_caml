@@ -17,9 +17,16 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-          
 
-function parse_caml (fields, order_field, order_by){
+
+
+// Example Usage:
+// parse_caml([ {field: "Status", excludes:["Completed", "Cancelled", "Pending Approval"]},
+//              {field: "Office", includes:["Home Office", "Regional Office", "Field Office"]},
+//              {field: "Portfolio", includes:["Financial Consulting"], excludes:["Application Development"]} ], 
+//            { sort_by: {field: "Date", asc: true}, row_limit: 10000 });
+
+function parse_caml (fields, options){
   function query_by_field (field, includes, excludes){
     function add_query_terms (field, arr, item_count, include_mode){
       var new_args = "", caml_where = "", item_tag = "", operand = "";
@@ -63,13 +70,13 @@ function parse_caml (fields, order_field, order_by){
     if (field_count == 2) {
       while (field_count > 0){
         var f = fields[field_count-1];
-        new_args += query_by_field(f.title, f.includes, f.excludes);
+        new_args += query_by_field(f.field, f.includes, f.excludes);
         field_count -= 1;
       }
       new_args = "<And>" + new_args + "</And>";
     } else {
       var f = fields[field_count-1];
-      new_args += query_by_field(f.title, f.includes, f.excludes);
+      new_args += query_by_field(f.field, f.includes, f.excludes);
       field_count -= 1;
     }
     caml_where = add_fields(fields, field_count);  // recursive call to add_fields
@@ -79,11 +86,18 @@ function parse_caml (fields, order_field, order_by){
       return new_args;
     }
   }  // end add_fields
-  var caml_where = "", order = "", caml_order = "";
-  var caml_options = "<QueryOptions><DateInUtc>TRUE</DateInUtc></QueryOptions><RowLimit>10000</RowLimit>";
-  if(fields != null && fields.length > 0){caml_where = "<Where>" + add_fields(fields, fields.length) + "</Where>"; }
-  if(order_by){ order = "TRUE"; } else { order = "FALSE"; }
-  if(order_field){ caml_order = "<OrderBy><FieldRef Name=\'" + order_field + "\' Ascending=\'" + order + "\' /></OrderBy>"; }
+
+  var caml_where = "", sort_order = "", caml_order = "";
+  var caml_options = "<QueryOptions><DateInUtc>TRUE</DateInUtc></QueryOptions>";
+  if(options.row_limit > 0){ caml_options += "<RowLimit>" + options.row_limit + "</RowLimit>"; }
+  var sort = options.sort_by;
+  if(sort.field){ 
+    if(sort.asc || sort.asc == undefined ){ sort_order = "TRUE"; } else { sort_order = "FALSE"; }
+    caml_order = "<OrderBy><FieldRef Name=\'" + sort.field + "\' Ascending=\'" + sort_order + "\' /></OrderBy>"; 
+  }  
+  if(fields != null && fields != undefined && fields.length > 0){
+    caml_where = "<Where>" + add_fields(fields, fields.length) + "</Where>"; 
+  }
   return "<View><Query>" + caml_where + "</Query>" + caml_order + caml_options + "</View>";
 }
 
