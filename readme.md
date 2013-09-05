@@ -2,11 +2,11 @@
 
 This JavaScript function recursively generates a string containing a SharePoint CAML query.  
 
-The function accepts an array of objects, where each object represents a field in the SP list.  Any number of field objects can be included in this array.  
+The function accepts an array of objects, where each object represents a field in the SP list.  Any number of field objects can be included in this array.
 
 Values for a given field can be included or excluded by adding the values to an 'includes' or 'excludes' array within the field object.  Any number of values can be included or excluded in this way.  These arrays are optional and may be omitted.
 
-You may also pass in the following options via the options object:
+You may also pass in the following arguments via the options object:
 
 | Option | Description | 
 | :---- |:--- |
@@ -14,6 +14,8 @@ You may also pass in the following options via the options object:
 | row_limit: 10000 | Use this option to specify a maximum number of data rows to be returned by the query. |
 
 These arguments are optional and may be omitted.
+
+You may also call parse_caml with no arguments or pass in null.  This will generate a CAML query that returns all items in the current SharePoint view.
 
 ### Example Query
 

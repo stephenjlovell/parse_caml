@@ -84,14 +84,16 @@ function parse_caml (fields, options){
 
   var caml_where = "", sort_order = "", caml_order = "";
   var caml_options = "<QueryOptions><DateInUtc>TRUE</DateInUtc></QueryOptions>";
-  if(options.row_limit > 0){ caml_options += "<RowLimit>" + options.row_limit + "</RowLimit>"; }
   
-  var sort = options.sort_by;
-  if(sort.field){ 
-    if(sort.asc || sort.asc == undefined ){ sort_order = "TRUE"; } else { sort_order = "FALSE"; }
-    caml_order = "<OrderBy><FieldRef Name=\'" + sort.field + "\' Ascending=\'" + sort_order + "\' /></OrderBy>"; 
-  }  
-  if(fields != null && fields != undefined && fields.length > 0){
+  if(options){
+    if(options.row_limit && options.row_limit > 0){ caml_options += "<RowLimit>" + options.row_limit + "</RowLimit>"; }
+    var sort = options.sort_by;
+    if (sort && sort.field) {
+      if(sort.asc || sort.asc == undefined ){ sort_order = "TRUE"; } else { sort_order = "FALSE"; }
+      caml_order = "<OrderBy><FieldRef Name=\'" + sort.field + "\' Ascending=\'" + sort_order + "\' /></OrderBy>"; 
+    }
+  }
+  if(fields && fields.length > 0){
     caml_where = "<Where>" + add_fields(fields, fields.length) + "</Where>"; 
   }
   return "<View><Query>" + caml_where + "</Query>" + caml_order + caml_options + "</View>";
