@@ -18,14 +18,6 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
-// Example Usage:
-// parse_caml([ {field: "Status", excludes:["Completed", "Cancelled", "Pending Approval"]},
-//              {field: "Office", includes:["Home Office", "Regional Office", "Field Office"]},
-//              {field: "Portfolio", includes:["Financial Consulting"], excludes:["Application Development"]} ], 
-//            { sort_by: {field: "Date", asc: true}, row_limit: 10000 });
-
 function parse_caml (fields, options){
   function query_by_field (field, includes, excludes){
     function add_query_terms (field, arr, item_count, include_mode){

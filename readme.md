@@ -1,4 +1,4 @@
-## parse_caml(fields, options)
+## parse_caml (fields, options)
 
 This JavaScript function recursively generates a string containing a SharePoint CAML query.  
 
