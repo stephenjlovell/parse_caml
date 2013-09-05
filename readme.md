@@ -13,6 +13,8 @@ You may also pass in the following options via the options object:
 | sort_by: {field: "name", asc: true} | Use this option to sort the query by the specified field and order.  Default order is Ascending. |
 | row_limit: 10000 | Use this option to specify a maximum number of data rows to be returned by the query. |
 
+These arguments are optional and may be omitted.
+
 ### Example Query
 
     WHERE (Status<>"Completed" AND Status<>"Cancelled" AND Status<>"Pending Approval") 
