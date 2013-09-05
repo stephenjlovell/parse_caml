@@ -19,18 +19,20 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 function parse_caml (fields, options){
+
   function add_fields (fields, field_count){
     var new_args = "", caml_where = "";
+    var f;
     if (field_count == 0){ return "";}
     if (field_count == 2) {
       while (field_count > 0){
-        var f = fields[field_count-1];
+        f = fields[field_count-1];
         new_args += build_elements_for_field(f.field, f.includes, f.excludes);
         field_count -= 1;
       }
       new_args = "<And>" + new_args + "</And>";
     } else {
-      var f = fields[field_count-1];
+      f = fields[field_count-1];
       new_args += build_elements_for_field(f.field, f.includes, f.excludes);
       field_count -= 1;
     }
@@ -41,7 +43,7 @@ function parse_caml (fields, options){
       return new_args;
     }
   }  // end add_fields
-  
+
   function build_elements_for_field (field, includes, excludes){
     var caml_where = "";
     var include = (includes != null && includes != undefined && includes.length > 0);
@@ -83,6 +85,7 @@ function parse_caml (fields, options){
   var caml_where = "", sort_order = "", caml_order = "";
   var caml_options = "<QueryOptions><DateInUtc>TRUE</DateInUtc></QueryOptions>";
   if(options.row_limit > 0){ caml_options += "<RowLimit>" + options.row_limit + "</RowLimit>"; }
+  
   var sort = options.sort_by;
   if(sort.field){ 
     if(sort.asc || sort.asc == undefined ){ sort_order = "TRUE"; } else { sort_order = "FALSE"; }
